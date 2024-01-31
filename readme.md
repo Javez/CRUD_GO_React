@@ -16,12 +16,13 @@ In the backend main directory, you can run next command to start app:
 - `go run main.go`
 
 ## Packages
-**Note: This is the list of `packages`, for backend!**
+**Note: This is the list of `packages`, for frontend!**
 - `npm install axios`
 
 **Note: This is the list of `packages`, for backend!**
 - `go get -u github.com/gin-gonic/gin`
 - `go get -u go.mongodb.org/mongo-driver/mongo`
+- `go get -u github.com/gin-contrib/cors`
 
 ## Learn More
 
