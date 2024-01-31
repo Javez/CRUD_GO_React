@@ -1,0 +1,136 @@
+body {
+    display: flex;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(to right bottom, #f8f11ba7, #b11b3e);
+  margin: 0;
+  padding: 0;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.user-home, .user-update {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100vw);
+  height: calc(100vh);
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+h1,
+h2 {
+  color: #333;
+}
+
+form {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+input {
+    font-size: 20px;
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+  border: solid 1px #a2a2a2;
+  border-radius: 4px;
+  
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+input:focus {
+  transform: scale(0.9);
+  border: solid 1px #000000; 
+  outline:#000000;
+    animation: btn-click 0.8s ease;
+}
+
+.buttons-group {
+  display: flex;
+  flex-direction: row;
+}
+
+button {
+  width: 100%;
+  background-color: #000000;
+  color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  
+  font-weight: bold;
+  border: none;
+}
+
+button:focus { 
+    animation: btn-click 0.8s ease;
+}
+
+button:hover {
+  background-color: #292929;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li button {
+  background-color: #dc3545;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+li button:hover {
+  background-color: #c82333;
+}
+
+p {
+  color: #777;
+}
+
+
+@keyframes btn-click {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform:  scale(0.8);;
+    }
+    100% {
+        top: scale(1);
+    }
+}

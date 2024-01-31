@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import "../style/main.style.css";
 
 function UserHome() {
   const [users, setUsers] = useState([]);
@@ -47,57 +48,61 @@ function UserHome() {
   };
 
   return (
-    <div>
-      <h1>User Management</h1>
+    <div className="user-home">
+      <div className="container">
+        <h1>User Management</h1>
 
-      <div>
-        <h2>Create User</h2>
-        <form>
-          <label>
-            Username:
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-            />
-          </label>
-          <br />
-          <label>
-            Email:
-            <input
-              type="text"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-            />
-          </label>
-          <br />
-          <button type="button" onClick={createUser}>
-            Create User
-          </button>
-        </form>
-      </div>
+        <div>
+          <h2>Create User</h2>
+          <form>
+            <label>
+              Username:
+              <input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleInputChange}
+              />
+            </label>
+            <br />
+            <label>
+              Email:
+              <input
+                type="text"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+              />
+            </label>
+            <br />
+            <button type="button" onClick={createUser}>
+              Create User
+            </button>
+          </form>
+        </div>
 
-      <div>
-        <h2>User List</h2>
-        {users && users.length > 0 ? (
-          <ul>
-            {users.map((user) => (
-              <li key={user.id}>
-                {user.username} - {user.email}
-                <Link to={`/edit/${user.id}`}>
-                  <button type="button">Edit</button>
-                </Link>
-                <button type="button" onClick={() => deleteUser(user.id)}>
-                  Delete
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No users yet...</p>
-        )}
+        <div>
+          <h2>User List</h2>
+          {users && users.length > 0 ? (
+            <ul>
+              {users.map((user) => (
+                <li key={user.id}>
+                  {user.username} - {user.email}
+                  <div className="buttons-group">
+                    <Link to={`/edit/${user.id}`}>
+                      <button type="button">Edit</button>
+                    </Link>
+                    <button type="button" onClick={() => deleteUser(user.id)}>
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No users yet...</p>
+          )}
+        </div>
       </div>
     </div>
   );

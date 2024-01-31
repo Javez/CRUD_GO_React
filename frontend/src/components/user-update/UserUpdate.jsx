@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import "../../style/main.style.css";
 
 function UserUpdate() {
   let navigate = useNavigate();
@@ -28,7 +29,7 @@ function UserUpdate() {
   const updateUser = (event) => {
     event.preventDefault();
     axios
-      .put(`http://localhost:8080/user/${id}`, userData) // Change PATCH to PUT
+      .put(`http://localhost:8080/user/${id}`, userData) 
       .then((response) => {
         console.log("User updated successfully:", response.data);
         navigate("/");
@@ -37,33 +38,35 @@ function UserUpdate() {
   };
 
   return (
-    <div>
-      <h2>Edit User</h2>
-      <form>
-        <label>
-          Username:
-          <input
-            type="text"
-            name="username"
-            value={userData.username}
-            onChange={handleInputChange}
-          />
-        </label>
-        <br />
-        <label>
-          Email:
-          <input
-            type="text"
-            name="email"
-            value={userData.email}
-            onChange={handleInputChange}
-          />
-        </label>
-        <br />
-        <button type="button" onClick={updateUser}>
-          Update User
-        </button>
-      </form>
+    <div className="user-update">
+      <div className="container">
+        <h2>Edit User</h2>
+        <form>
+          <label>
+            Username:
+            <input
+              type="text"
+              name="username"
+              value={userData.username}
+              onChange={handleInputChange}
+            />
+          </label>
+          <br />
+          <label>
+            Email:
+            <input
+              type="text"
+              name="email"
+              value={userData.email}
+              onChange={handleInputChange}
+            />
+          </label>
+          <br />
+          <button type="button" onClick={updateUser}>
+            Update User
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
