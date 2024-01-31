@@ -17,9 +17,9 @@ import (
 
 // User represents the User model
 type User struct {
-	ID       string `json:"id" bson:"_id,omitempty"`
-	Username string `json:"username" bson:"username,omitempty"`
-	Email    string `json:"email" bson:"email,omitempty"`
+	ID       primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Username string             `json:"username" bson:"username,omitempty"`
+	Email    string             `json:"email" bson:"email,omitempty"`
 }
 
 var client *mongo.Client
@@ -52,13 +52,13 @@ func init() {
 func main() {
 	r := gin.Default()
 
- 	r.Use(cors.Default())
+	r.Use(cors.Default())
 
 	r.GET("/users", getUsers)
-	r.GET("/users/:id", getUser)
-	r.POST("/users", createUser)
-	r.PUT("/users/:id", updateUser)
-	r.DELETE("/users/:id", deleteUser)
+	r.GET("/user/:id", getUser)
+	r.POST("/user", createUser)
+	r.PUT("/user/:id", updateUser)
+	r.DELETE("/user/:id", deleteUser)
 
 	// Run the server
 	r.Run(":8080")
@@ -90,20 +90,25 @@ func getUsers(c *gin.Context) {
 }
 
 func getUser(c *gin.Context) {
-	id := c.Param("id")
-
-	var user User
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	err := collection.FindOne(ctx, bson.M{"_id": id}).Decode(&user)
+	id, err := primitive.ObjectIDFromHex(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		// Handle error, for example:
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
 		return
-	}
+	} else {
+		var user User
 
-	c.JSON(http.StatusOK, user)
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		err := collection.FindOne(ctx, bson.M{"_id": id}).Decode(&user)
+		if err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+			return
+		}
+
+		c.JSON(http.StatusOK, user)
+	}
 }
 
 func createUser(c *gin.Context) {
@@ -130,7 +135,7 @@ func createUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
 		return
 	}
-	user.ID = objectID.Hex()
+	user.ID = objectID
 
 	c.JSON(http.StatusCreated, user)
 }
@@ -138,8 +143,15 @@ func createUser(c *gin.Context) {
 func updateUser(c *gin.Context) {
 	id := c.Param("id")
 
-	var user User
-	if err := c.ShouldBindJSON(&user); err != nil {
+	// Parse the string ID to ObjectID
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+		return
+	}
+
+	var userUpdate User
+	if err := c.ShouldBindJSON(&userUpdate); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -147,22 +159,47 @@ func updateUser(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	_, err := collection.UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": user})
-	if err != nil {
+	filter := bson.M{"_id": objectID}
+	update := bson.M{"$set": bson.M{
+		"username": userUpdate.Username,
+		"email":    userUpdate.Email,
+		// Add other fields as needed
+	}}
+
+	// Use FindOneAndUpdate to get the updated document
+	options := options.FindOneAndUpdate().SetReturnDocument(options.After)
+	result := collection.FindOneAndUpdate(ctx, filter, update, options)
+
+	// Check if the document was not found
+	if result.Err() != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, user)
+	// Decode the updated document into userUpdate
+	err = result.Decode(&userUpdate)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, userUpdate)
 }
 
 func deleteUser(c *gin.Context) {
 	id := c.Param("id")
 
+	// Parse the string ID to ObjectID
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+		return
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	_, err := collection.DeleteOne(ctx, bson.M{"_id": id})
+	_, err = collection.DeleteOne(ctx, bson.M{"_id": objectID})
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
