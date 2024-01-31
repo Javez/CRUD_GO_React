@@ -1,0 +1,14 @@
+# Golang
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.sum
+
+# MongoDB
+*/data/db/
+
+# React
+*/node_modules/
+*/build/
