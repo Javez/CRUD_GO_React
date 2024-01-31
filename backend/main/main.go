@@ -2,22 +2,24 @@ package main
 
 import (
 	"context"
-	"net/http"
-	"time"
 	"fmt"
 	"log"
-	"github.com/gin-gonic/gin"
+	"net/http"
+	"time"
+
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // User represents the User model
 type User struct {
-	ID       string `json:"id" bson:"_id"`
-	Username string `json:"username" bson:"username"`
-	Email    string `json:"email" bson:"email"`
+	ID       string `json:"id" bson:"_id,omitempty"`
+	Username string `json:"username" bson:"username,omitempty"`
+	Email    string `json:"email" bson:"email,omitempty"`
 }
 
 var client *mongo.Client
@@ -26,7 +28,7 @@ var collection *mongo.Collection
 func init() {
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().
-		ApplyURI("Dont look at my mongo key >-.-<").
+		ApplyURI("mongodb+srv://mrjavez:vceLNfpPBHRUp2Rw@cluster0.lvfkaay.mongodb.net/").
 		SetServerAPIOptions(serverAPI)
 
 	// Create a new client and connect to the server
@@ -105,25 +107,32 @@ func getUser(c *gin.Context) {
 }
 
 func createUser(c *gin.Context) {
-	 var user User
-    if err := c.ShouldBindJSON(&user); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
+	var user User
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
-    result, err := collection.InsertOne(ctx, user)
-    if err != nil {
-        // Log the error for debugging
-        log.Println("Error creating user:", err)
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
-        return
-    }
+	result, err := collection.InsertOne(ctx, user)
+	if err != nil {
+		log.Println("Error creating user:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+		return
+	}
 
-    user.ID = result.InsertedID.(string)
-    c.JSON(http.StatusCreated, user)
+	// Extract the generated ObjectID and convert it to a string
+	objectID, ok := result.InsertedID.(primitive.ObjectID)
+	if !ok {
+		log.Println("Error converting ObjectID")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+		return
+	}
+	user.ID = objectID.Hex()
+
+	c.JSON(http.StatusCreated, user)
 }
 
 func updateUser(c *gin.Context) {
