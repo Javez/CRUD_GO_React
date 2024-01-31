@@ -18,6 +18,7 @@ In the backend main directory, you can run next command to start app:
 ## Packages
 **Note: This is the list of `packages`, for frontend!**
 - `npm install axios`
+- `npm install react-router-dom`
 
 **Note: This is the list of `packages`, for backend!**
 - `go get -u github.com/gin-gonic/gin`
