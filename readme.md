@@ -25,6 +25,7 @@ In the backend main directory, you can run next command to start app:
 - `go get -u go.mongodb.org/mongo-driver/mongo`
 - `go get -u github.com/gin-contrib/cors`
 - `go get -u github.com/joho/godotenv`
+- `go get go.mongodb.org/mongo-driver/bson/primitive
 
 ## Docker containers is under devlopment
 
