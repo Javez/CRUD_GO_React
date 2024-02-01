@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    container_name: backend
+    ports:
+      - "8080:8080"
+    environment:
+      DB_CONNECTION_STRING: "mongodb+srv://mrjavez:vceLNfpPBHRUp2Rw@cluster0.lvfkaay.mongodb.net/"
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend

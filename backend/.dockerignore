@@ -1,0 +1,15 @@
+# Ignore binary files and executables
+*.exe
+*.out
+
+# Ignore build artifacts and output
+/bin
+/build
+/dist
+
+# Ignore any environment-specific files
+.env
+
+# Ignore any local development files
+*.log
+.DS_Store

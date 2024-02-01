@@ -25,6 +25,8 @@ In the backend main directory, you can run next command to start app:
 - `go get -u go.mongodb.org/mongo-driver/mongo`
 - `go get -u github.com/gin-contrib/cors`
 
+## Docker containers is under devlopment
+
 ## Screenshots
 ![зображення](https://github.com/Javez/CRUD_GO_React/assets/66317972/383916bc-be3c-4826-9845-bb501c0f41a2)
 ![зображення](https://github.com/Javez/CRUD_GO_React/assets/66317972/24cb641f-9a9d-460a-8477-8a4c47471e62)
