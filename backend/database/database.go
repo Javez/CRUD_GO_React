@@ -6,16 +6,19 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	
 )
+
 
 
 var Client *mongo.Client
 var Collection *mongo.Collection
 
-func InitializeDatabase() {
+func InitializeDatabase(dbConnectionString string) {
+	
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().
-		ApplyURI("mongodb+srv://mrjavez:vceLNfpPBHRUp2Rw@cluster0.lvfkaay.mongodb.net/").
+		ApplyURI(dbConnectionString).
 		SetServerAPIOptions(serverAPI)
 
 	var err error

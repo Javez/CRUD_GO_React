@@ -12,3 +12,6 @@
 # React
 */node_modules/
 */build/
+
+#Env
+*/config.env
